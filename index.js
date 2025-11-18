@@ -107,6 +107,19 @@ async function run() {
     })
 
 
+    // Add the updated signIn time of a user
+    app.patch('/users', async(req, res) =>{
+      const email  = req.body.email;
+      const filter = {email};
+
+      const updatedDoc = {
+        $set:{
+          lastSignInTime : req?.body?.lastSignInTime
+        }
+      }
+      const result = await userCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
