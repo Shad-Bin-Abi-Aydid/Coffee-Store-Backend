@@ -77,49 +77,51 @@ async function run() {
           photoURL: coffee.photoURL,
         },
       };
-      const result = await coffeeCollection.updateOne(filter,updateCoffee,options);
+      const result = await coffeeCollection.updateOne(
+        filter,
+        updateCoffee,
+        options
+      );
       res.send(result);
     });
 
-// ------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------
     // User Related API's
 
-
-    // C operation or Create user in database
-    app.post('/users', async(req, res) =>{
-      const newUser = req.body;
-      const result = await userCollection.insertOne(newUser)
-      res.send(result);
-    })
-
     // R operation or read the users from DB
-    app.get('/users', async(req, res) =>{
+    app.get("/allusers", async (req, res) => {
       const result = await userCollection.find().toArray();
       res.send(result);
-    })
+    });
+
+    // C operation or Create user in database
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    });
 
     // D operation or Delete user from the database
-    app.delete('/users/:id', async(req, res) => {
+    app.delete("/users/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
-      const result = await userCollection.deleteOne(query)
+      const query = { _id: new ObjectId(id) };
+      const result = await userCollection.deleteOne(query);
       res.send(result);
-    })
-
+    });
 
     // Add the updated signIn time of a user
-    app.patch('/users', async(req, res) =>{
-      const email  = req.body.email;
-      const filter = {email};
+    app.patch("/users", async (req, res) => {
+      const email = req.body.email;
+      const filter = { email };
 
       const updatedDoc = {
-        $set:{
-          lastSignInTime : req?.body?.lastSignInTime
-        }
-      }
+        $set: {
+          lastSignInTime: req?.body?.lastSignInTime,
+        },
+      };
       const result = await userCollection.updateOne(filter, updatedDoc);
       res.send(result);
-    })
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
